@@ -1,4 +1,10 @@
+
 (function () {
+    /**
+     * Es el contructor del objeto tablero de juego
+     * @param {int} width Ancho del tablero
+     * @param {int} heigth Alto del tablero
+     */
     self.Board = function (width, heigth) {
         this.width = width;
         this.heigth = heigth;
@@ -8,7 +14,9 @@
         this.ball = null;
         this.playing = false;
     }
-
+    /**
+     * Guarda los elementos de juego
+     */
     self.Board.prototype = {
         get elements() {
             var elements = this.bars.map(function (bar) {
@@ -22,6 +30,13 @@
 })();
 
 (function () {
+    /**
+     * Se crea el objeto pelota
+     * @param {int} x Posición eje x en el tablero
+     * @param {int} y Posición eje y en el tablero
+     * @param {int} radius Tamaño de la pelora
+     * @param {objeto} board Tablero de juego
+     */
     self.Ball = function (x, y, radius, board) {
         this.x = x;
         this.y = y;
@@ -38,6 +53,9 @@
         this.kind = "circle";
     }
     self.Ball.prototype = {
+        /**
+         * Permite modificar la dirección de la pelota
+         */
         move: function () {
             this.x += (this.speed_x * this.direction);
             this.y += (this.speed_y);
@@ -48,6 +66,10 @@
         get height(){
             return this.radius * 2;
         },
+        /**
+         * Calcula el rebote de la pelota después de colisionar con las barras
+         * @param {objeto} bar Barra de juego
+         */
         collision: function (bar) {
             var relative_intersect_y = (bar.y + (bar.height / 2)) - this.y;
 
@@ -68,6 +90,14 @@
 })();
 
 (function () {
+    /**
+     * Crea la barra de juego
+     * @param {int} x Posición eje x
+     * @param {int} y Posición eje y
+     * @param {int} width Tamaño ancho
+     * @param {int} height Tamaño alto
+     * @param {objeto} board Tablero de juego
+     */
     self.Bar = function (x, y, width, height, board) {
         this.x = x;
         this.y = y;
@@ -78,7 +108,9 @@
         this.kind = "rectangle";
         this.speed = 20;
     }
-
+    /**
+     * Métodos que brindan la capacidad de mover las barras en el eje y del tablero
+     */
     self.Bar.prototype = {
         down: function () {
             this.y += this.speed;
@@ -93,6 +125,11 @@
 })();
 
 (function () {
+    /**
+     * Dibuja el tablero de juego en la pantalla
+     * @param {objeto html} canvas Objeto dentro del html que permite rederizar
+     * @param {objeto} board Tablero de juego
+     */
     self.BoardView = function (canvas, board) {
         this.canvas = canvas;
         this.canvas.width = board.width;
@@ -103,9 +140,15 @@
 
 
     self.BoardView.prototype = {
+        /**
+         * Borra el tablero
+         */
         clean: function () {
             this.ctx.clearRect(0, 0, this.board.width, this.board.heigth)
         },
+        /**
+         * Dibuja el tablero
+         */
         draw: function () {
             for (let i = this.board.elements.length - 1; i >= 0; i--) {
                 var el = this.board.elements[i];
@@ -113,6 +156,9 @@
                 draw(this.ctx, el)
             }
         },
+        /**
+         * Verfica las colisiones
+         */
         check_collisions: function () {
             for (let i = this.board.bars.length -1; i >= 0; i--) {
                 var bar = this.board.bars[i];
@@ -130,7 +176,12 @@
             }
         }
     }
-
+    /**
+     * Si hay una colisión entre los dos objetos cambia hit a true
+     * @param {objeto} a Barras de juego
+     * @param {objeto} b Pelota de juego
+     * @returns boolean
+     */
     function hit(a, b) {
         var hit = false;
 
@@ -153,7 +204,11 @@
         }
         return hit;
     }
-
+    /**
+     * Renderiza en pantalla un objeto
+     * @param {propiedad canvas} ctx específica el método de renderizado
+     * @param {objeto} element objeto que se quiere dibujar en pantalla
+     */
     function draw(ctx, element) {
         switch (element.kind) {
             case "rectangle":
@@ -176,8 +231,10 @@ var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
 var ball = new Ball(350, 100, 10, board);
 
+/**
+ * Escucha las teclas que se presionan y asigna una acción determinada a algunas de ellas
+ */
 document.addEventListener('keydown', function (ev) {
-    console.log(ev.key);
     if (ev.key == 'ArrowUp') {
         ev.preventDefault();
         bar2.up();
@@ -195,10 +252,12 @@ document.addEventListener('keydown', function (ev) {
         board.playing = !board.playing;
     }
 })
-//self.addEventListener("load", main());
 board_view.draw();
 window.requestAnimationFrame(controller);
 
+/**
+ * Renderiza todo el juego en pantalla y sus funcionalidades, se autoejecuta a sí mismo
+ */
 function controller() {
     board_view.play();
     window.requestAnimationFrame(controller);
