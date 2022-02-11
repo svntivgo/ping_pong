@@ -10,8 +10,10 @@
 
     self.Board.prototype = {
         get elements() {
-            var elements = this.bars;
-            // elements.push(this.ball);
+            var elements = this.bars.map(function(bar) {
+                return bar
+            });
+            elements.push(this.ball);
             return elements;
         }
     }
@@ -105,7 +107,7 @@ var bar = new Bar(20, 100, 40, 100, board);
 var bar2 = new Bar(700, 100, 40, 100, board);
 var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
-// var ball = new Ball(350, 100, 10, board);
+var ball = new Ball(350, 100, 10, board);
 
 document.addEventListener('keydown', function (ev) {
     ev.preventDefault();
