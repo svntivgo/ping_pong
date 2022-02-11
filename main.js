@@ -47,7 +47,7 @@
         },
         get height(){
             return this.radius * 2;
-        }
+        },
         collision: function (bar) {
             var relative_intersect_y = (bar.y + (bar.height / 2)) - this.y;
 
@@ -55,7 +55,7 @@
 
             this.bounce_angle = normalized_intersect_y * this.max_bounce_angle;
 
-            this.speed_y = this.speed * Math.sin(this.bounce_angle);
+            this.speed_y = this.speed * -Math.sin(this.bounce_angle);
             this.speed_x = this.speed * Math.cos(this.bounce_angle);
 
             if (this.x > (this.board.width / 2)) {
