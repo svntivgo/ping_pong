@@ -11,7 +11,7 @@
     self.Board.prototype = {
         get elements() {
             var elements = this.bars;
-            elements.push(this.ball);
+            //elements.push(this.ball);
             return elements;
         }
     }
@@ -24,10 +24,10 @@
         this.y = y;
         this.width = width;
         this.height = height;
-        this.board = board
+        this.board = board;
         this.board.bars.push(this);
         this.kind = "rectangle";
-        this.speed = 10;
+        this.speed = 20;
     }
 
     self.Bar.prototype = {
@@ -54,6 +54,10 @@
 
 
     self.BoardView.prototype = {
+        clean: function() {
+            console.log(":p");
+            this.ctx.clearRect(0, 0, this.board.width, this.board.heigth)
+        },
         draw: function () {
             for (let i = this.board.elements.length - 1; i >= 0; i--) {
                 var el = this.board.elements[i];
@@ -64,12 +68,10 @@
     }
 
     function draw(ctx, element) {
-        if (element !== null && element.hasOwnProperty('kind')) {
-            switch (element.kind) {
-                case "rectangle":
-                    ctx.fillRect(element.x, element.y, element.width, element.height);
-                    break;
-            }
+        switch (element.kind) {
+            case "rectangle":
+                ctx.fillRect(element.x, element.y, element.width, element.height);
+                break;
         }
     }
 })();
@@ -81,21 +83,22 @@ var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas, board);
 
 document.addEventListener('keydown', function(ev) {
-    console.log(ev.key);
+    ev.preventDefault();
     if (ev.key == 'ArrowUp') {
-        bar.up();
-    } else if (ev.key == 'ArrowDown') {
-        bar.down();
-    } else if (ev.key == 'w') {
         bar2.up();
-    } else if (ev.key == 's') {
+    } else if (ev.key == 'ArrowDown') {
         bar2.down();
+    } else if (ev.key == 'w') {
+        bar.up();
+    } else if (ev.key == 's') {
+        bar.down();
     }
 })
-window.addEventListener("load", main());
+//self.addEventListener("load", main());
+window.requestAnimationFrame(controller);
 
-function main() {
-
-    console.log(board);
+function controller() {
+    board_view.clean();
     board_view.draw();
+    window.requestAnimationFrame(controller);
 }
